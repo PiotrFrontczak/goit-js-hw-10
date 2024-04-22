@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Ustawienie nagłówka z kluczem API dla wszystkich żądań
-axios.defaults.headers.common["x-api-key"] = "api_key=live_VKCIRihYeFRPBwlrljopUQAx3HyZ6OnssyhvlIi4631GwHhUN0m1HJxXe98yCq1C";
+axios.defaults.headers.common["x-api-key"] = "live_VKCIRihYeFRPBwlrljopUQAx3HyZ6OnssyhvlIi4631GwHhUN0m1HJxXe98yCq1C";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const breedSelect = document.querySelector(".breed-select");
