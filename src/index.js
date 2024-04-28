@@ -13,7 +13,6 @@ const breedSelect = new SlimSelect({
     breedSelect.setData(breeds);
   },
   onChange: async (val) => {
-    // Kod obsługi zmiany wartości
   },
 });
 
