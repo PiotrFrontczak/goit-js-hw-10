@@ -9,11 +9,14 @@ axios.defaults.headers.common[
 const breedSelect = new SlimSelect({
   select: "#breed-select",
   placeholder: "Select a breed",
-  values: [], // Pusta tablica jako wartość początkowa
+  afterLoad: (data) => {
+    breedSelect.setData(breeds);
+  },
   onChange: async (val) => {
     // Kod obsługi zmiany wartości
   },
 });
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
