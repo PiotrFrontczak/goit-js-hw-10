@@ -9,16 +9,9 @@ axios.defaults.headers.common[
 const breedSelect = new SlimSelect({
   select: "#breed-select",
   placeholder: "Select a breed",
+  values: [], // Pusta tablica jako wartość początkowa
   onChange: async (val) => {
-    const breedId = val.value;
-    try {
-      Notiflix.Loading.standard("Loading cat info...");
-      const cat = await fetchCatByBreed(breedId);
-      renderCatInfo(cat);
-      Notiflix.Loading.remove();
-    } catch (error) {
-      handleFetchError(error, "Failed to fetch cat info");
-    }
+    // Kod obsługi zmiany wartości
   },
 });
 
