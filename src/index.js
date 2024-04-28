@@ -40,26 +40,36 @@ async function fetchBreeds() {
 }
 
 async function fetchCatByBreed(breedId) {
-  const response = await axios.get(
-    `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`
-  );
+  try {
+    const response = await axios.get(
+      `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`
+    );
 
-  if (!response.data || response.data.length === 0) {
-    throw new Error("Cat information not found");
+    if (!response.data || response.data.length === 0) {
+      throw new Error("Cat information not found");
+    }
+
+    const catInfo = response.data[0];
+    if (!catInfo || !catInfo.breeds || catInfo.breeds.length === 0) {
+      throw new Error("Cat information not found");
+    }
+
+    return {
+      breed: catInfo.breeds[0].name,
+      description: catInfo.breeds[0].description || "No description available",
+      temperament: catInfo.breeds[0].temperament || "No temperament available",
+      imageUrl: catInfo.url,
+    };
+  } catch (error) {
+    throw error; // Przekaż błąd dalej, aby był obsłużony przez funkcję wywołującą
   }
-
-  const catInfo = response.data[0];
-  if (!catInfo || !catInfo.breeds || catInfo.breeds.length === 0) {
-    throw new Error("Cat information not found");
-  }
-
-  return {
-    breed: catInfo.breeds[0].name,
-    description: catInfo.breeds[0].description || "No description available",
-    temperament: catInfo.breeds[0].temperament || "No temperament available",
-    imageUrl: catInfo.url,
-  };
 }
+
+function handleFetchError(error, message) {
+  console.error("Error:", error);
+  Notiflix.Report.failure("Error", message, "OK");
+}
+
 
 function renderCatInfo(cat) {
   const catBreed = document.getElementById("cat-breed");
