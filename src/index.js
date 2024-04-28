@@ -61,7 +61,8 @@ async function fetchCatByBreed(breedId) {
       imageUrl: catInfo.url,
     };
   } catch (error) {
-    throw error; // Przekaż błąd dalej, aby był obsłużony przez funkcję wywołującą
+    handleFetchError(error, "Failed to fetch cat info");
+    throw error;
   }
 }
 
@@ -70,19 +71,25 @@ function handleFetchError(error, message) {
   Notiflix.Report.failure("Error", message, "OK");
 }
 
-
 function renderCatInfo(cat) {
-  const catBreed = document.getElementById("cat-breed");
-  const catDescription = document.getElementById("cat-description");
-  const catTemperament = document.getElementById("cat-temperament");
-  const catImage = document.getElementById("cat-image");
-
+  const catInfoContainer = document.querySelector(".cat-info");
+  const catBreed = document.createElement("h2");
   catBreed.textContent = cat.breed;
-  catDescription.textContent = `Description: ${cat.description}`;
-  catTemperament.textContent = `Temperament: ${cat.temperament}`;
-  catImage.src = cat.imageUrl;
+  catInfoContainer.appendChild(catBreed);
 
-  document.getElementById("cat-info").style.display = "block";
+  const catDescription = document.createElement("p");
+  catDescription.textContent = `Description: ${cat.description}`;
+  catInfoContainer.appendChild(catDescription);
+
+  const catTemperament = document.createElement("p");
+  catTemperament.textContent = `Temperament: ${cat.temperament}`;
+  catInfoContainer.appendChild(catTemperament);
+
+  const catImage = document.createElement("img");
+  catImage.src = cat.imageUrl;
+  catInfoContainer.appendChild(catImage);
+
+  catInfoContainer.style.display = "block";
 }
 
 function handleFetchError(error, message) {
