@@ -91,8 +91,3 @@ function renderCatInfo(cat) {
 
   catInfoContainer.style.display = "block";
 }
-
-function handleFetchError(error, message) {
-  console.error("Error:", error);
-  Notiflix.Report.failure("Error", message, "OK");
-}
