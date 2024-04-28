@@ -16,7 +16,6 @@ const breedSelect = new SlimSelect({
   },
 });
 
-
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const breeds = await fetchBreeds();
