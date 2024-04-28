@@ -1,87 +1,57 @@
 import axios from "axios";
+import SlimSelect from "slim-select";
+import Notiflix from "notiflix";
 
-// Ustawienie nagłówka z kluczem API dla wszystkich żądań
-axios.defaults.headers.common["x-api-key"] = "live_VKCIRihYeFRPBwlrljopUQAx3HyZ6OnssyhvlIi4631GwHhUN0m1HJxXe98yCq1C";
+axios.defaults.headers.common[
+  "x-api-key"
+] = "api_key=live_VKCIRihYeFRPBwlrljopUQAx3HyZ6OnssyhvlIi4631GwHhUN0m1HJxXe98yCq1C";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const breedSelect = document.querySelector(".breed-select");
-  const catInfoContainer = document.querySelector(".cat-info");
-  const loader = document.querySelector(".loader");
-  const error = document.querySelector(".error");
+  const breedSelect = new SlimSelect({
+    select: "#breed-select",
+    placeholder: "Select a breed",
+    onChange: async (val) => {
+      const breedId = val.value;
 
-  const renderBreeds = breeds => {
-    breeds.forEach(breed => {
-      const option = document.createElement("option");
-      option.value = breed.id;
-      option.textContent = breed.name;
-      breedSelect.appendChild(option);
-    });
-  };
-
-  const renderCatInfo = cat => {
-    catInfoContainer.innerHTML = `
-      <img src="${cat.imageUrl}" alt="${cat.breed}" />
-      <h2>${cat.breed}</h2>
-      <p><strong>Description:</strong> ${cat.description}</p>
-      <p><strong>Temperament:</strong> ${cat.temperament}</p>
-    `;
-  };
-
-  try {
-    loader.style.display = "block";
-    const breeds = await fetchBreeds();
-    loader.style.display = "none";
-    renderBreeds(breeds);
-
-    breedSelect.addEventListener("change", async event => {
-      const breedId = event.target.value;
-      loader.style.display = "block";
-      catInfoContainer.style.display = "none";
       try {
+        Notiflix.Loading.standard("Loading cat info...");
         const cat = await fetchCatByBreed(breedId);
-        loader.style.display = "none";
-        catInfoContainer.style.display = "block";
         renderCatInfo(cat);
+        Notiflix.Loading.remove();
       } catch (error) {
         console.error("Error fetching cat by breed:", error);
+        Notiflix.Report.failure("Error", "Failed to fetch cat info", "OK");
       }
-    });
+    },
+  });
+
+  try {
+    const breeds = await fetchBreeds();
+    breedSelect.setData(breeds);
   } catch (error) {
     console.error("Error fetching breeds:", error);
+    Notiflix.Report.failure("Error", "Failed to fetch breeds", "OK");
   }
 });
 
-// Funkcja do pobierania listy ras
 async function fetchBreeds() {
-  document.querySelector(".breed-select").style.display = "none";
-  document.querySelector(".cat-info").style.display = "none";
-  document.querySelector(".loader").style.display = "block";
-
   try {
     const response = await axios.get("https://api.thecatapi.com/v1/breeds");
-    document.querySelector(".loader").style.display = "none";
-    document.querySelector(".breed-select").style.display = "block";
-    return response.data.map(breed => ({
-      id: breed.id,
-      name: breed.name
+    return response.data.map((breed) => ({
+      value: breed.id,
+      text: breed.name,
     }));
   } catch (error) {
-    document.querySelector(".loader").style.display = "none";
-    document.querySelector(".error").style.display = "block";
     console.error("Error fetching breeds:", error);
     throw error;
   }
 }
 
-// Funkcja do pobierania informacji o kocie na podstawie identyfikatora rasy
 async function fetchCatByBreed(breedId) {
-  document.querySelector(".cat-info").style.display = "none";
-  document.querySelector(".loader").style.display = "block";
-
   try {
-    const response = await axios.get(`https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`);
-    document.querySelector(".loader").style.display = "none";
-    document.querySelector(".cat-info").style.display = "block";
+    const response = await axios.get(
+      `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`
+    );
 
     if (!response.data || response.data.length === 0) {
       throw new Error("Cat information not found");
@@ -92,17 +62,22 @@ async function fetchCatByBreed(breedId) {
       throw new Error("Cat information not found");
     }
 
-    const cat = {
+    return {
       breed: catInfo.breeds[0].name,
       description: catInfo.breeds[0].description || "No description available",
       temperament: catInfo.breeds[0].temperament || "No temperament available",
-      imageUrl: catInfo.url
+      imageUrl: catInfo.url,
     };
-    return cat;
   } catch (error) {
-    document.querySelector(".loader").style.display = "none";
-    document.querySelector(".error").style.display = "block";
     console.error("Error fetching cat by breed:", error);
     throw error;
   }
+}
+
+function renderCatInfo(cat) {
+  document.getElementById("cat-breed").textContent = cat.breed;
+  document.getElementById("cat-description").textContent = `Description: ${cat.description}`;
+  document.getElementById("cat-temperament").textContent = `Temperament: ${cat.temperament}`;
+  document.getElementById("cat-image").src = cat.imageUrl;
+  document.getElementById("cat-info").style.display = "block";
 }
