@@ -1,5 +1,5 @@
 import axios from "axios";
-import SlimSelect from "slim-select";
+import SlimSelect from "Slim-select";
 import Notiflix from "notiflix";
 
 axios.defaults.headers.common[
@@ -26,8 +26,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const breeds = await fetchBreeds();
-    const breedSelect = new SlimSelect(selectInput, settingSlimSelect);
-    breedSelect.setData(breeds);
+    const slim = new SlimSelect(selectInput, settingSlimSelect);
+    slim.setData(breeds);
   } catch (error) {
     handleFetchError(error, "Failed to fetch breeds");
   }
