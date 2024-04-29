@@ -6,19 +6,27 @@ axios.defaults.headers.common[
   "x-api-key"
 ] = "api_key=live_VKCIRihYeFRPBwlrljopUQAx3HyZ6OnssyhvlIi4631GwHhUN0m1HJxXe98yCq1C";
 
-const breedSelect = new SlimSelect({
-  select: "#breed-select",
-  placeholder: "Select a breed",
-  afterLoad: (data) => {
-    breedSelect.setData(breeds);
-  },
-  onChange: async (val) => {
-  },
-});
-
 document.addEventListener("DOMContentLoaded", async () => {
+  const selectInput = document.querySelector('select.breed-select');
+  const settingSlimSelect = {
+    openPosition: 'auto', // 'auto', 'up' or 'down'
+    placeholder: 'Choose a cat breed',
+    onChange: async (val) => {
+      const breedId = val.value;
+      try {
+        Notiflix.Loading.standard("Loading cat info...");
+        const cat = await fetchCatByBreed(breedId);
+        renderCatInfo(cat);
+        Notiflix.Loading.remove();
+      } catch (error) {
+        handleFetchError(error, "Failed to fetch cat info");
+      }
+    },
+  };
+
   try {
     const breeds = await fetchBreeds();
+    const breedSelect = new SlimSelect(selectInput, settingSlimSelect);
     breedSelect.setData(breeds);
   } catch (error) {
     handleFetchError(error, "Failed to fetch breeds");
