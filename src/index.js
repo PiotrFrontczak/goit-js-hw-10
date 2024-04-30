@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function fetchBreeds() {
   try {
     const response = await axios.get('https://api.thecatapi.com/v1/breeds');
-    console.log('Breeds:', response.data); // Log the response data
     return response.data.map(breed => ({
       id: breed.id,
       name: breed.name,
