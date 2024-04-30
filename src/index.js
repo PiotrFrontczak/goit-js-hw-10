@@ -6,31 +6,13 @@ axios.defaults.headers.common['x-api-key'] =
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    // Fetch the list of cat breeds
     const breeds = await fetchBreeds();
-    // Populate the breed select dropdown with fetched data
-    populateBreedSelect(breeds);
+    populateBreedSelect(breeds); // Populate the breed select with the fetched data
   } catch (error) {
-    // Handle error in fetching breeds
     handleFetchError(error, 'Failed to fetch breeds');
   }
-  
-  // Add event listener for breed selection
-  const breedSelect = document.getElementById('breed-select');
-  breedSelect.addEventListener('change', async (event) => {
-    const breedId = event.target.value;
-    try {
-      // Fetch cat information for the selected breed
-      const catInfo = await fetchCatByBreed(breedId);
-      // Render cat information
-      renderCatInfo(catInfo);
-    } catch (error) {
-      // Error handling for fetching cat info
-    }
-  });
 });
 
-// Function to fetch the list of cat breeds
 async function fetchBreeds() {
   const response = await axios.get('https://api.thecatapi.com/v1/breeds');
   return response.data.map(breed => ({
@@ -39,16 +21,11 @@ async function fetchBreeds() {
   }));
 }
 
-// Function to fetch cat information by breed ID
 async function fetchCatByBreed(breedId) {
   try {
-    console.log('Fetching cat info for breed ID:', breedId);
-
     const response = await axios.get(
       `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`
     );
-
-    console.log('Cat info response:', response);
 
     if (!response.data || response.data.length === 0) {
       throw new Error('Cat information not found');
@@ -66,20 +43,16 @@ async function fetchCatByBreed(breedId) {
       imageUrl: catInfo.url,
     };
   } catch (error) {
-    console.error('Error fetching cat info:', error);
     handleFetchError(error, 'Failed to fetch cat info');
     throw error;
   }
 }
 
-
-// Function to handle fetch errors
 function handleFetchError(error, message) {
   console.error('Error:', error);
   Notiflix.Report.failure('Error', message, 'OK');
 }
 
-// Function to render cat information
 function renderCatInfo(cat) {
   const catInfoContainer = document.querySelector('.cat-info');
   catInfoContainer.innerHTML = ''; // Clear previous cat info
@@ -103,7 +76,6 @@ function renderCatInfo(cat) {
   catInfoContainer.style.display = 'block';
 }
 
-// Function to populate the breed select dropdown
 function populateBreedSelect(breeds) {
   const breedSelect = document.getElementById('breed-select');
   breeds.forEach(breed => {
