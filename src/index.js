@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Notiflix from 'notiflix'; // Make sure you have Notiflix installed and imported
+import Notiflix from 'notiflix';
 
 axios.defaults.headers.common['x-api-key'] =
   'api_key=live_VKCIRihYeFRPBwlrljopUQAx3HyZ6OnssyhvlIi4631GwHhUN0m1HJxXe98yCq1C';
@@ -7,7 +7,7 @@ axios.defaults.headers.common['x-api-key'] =
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     const breeds = await fetchBreeds();
-    populateBreedSelect(breeds); // Populate the breed select with the fetched data
+    populateBreedSelect(breeds);
   } catch (error) {
     handleFetchError(error, 'Failed to fetch breeds');
   }
@@ -59,7 +59,7 @@ function handleFetchError(error, message) {
 
 function renderCatInfo(cat) {
   const catInfoContainer = document.querySelector('.cat-info');
-  catInfoContainer.innerHTML = ''; // Clear previous cat info
+  catInfoContainer.innerHTML = ''; 
 
   const catImage = document.createElement('img');
   catImage.src = cat.imageUrl;
