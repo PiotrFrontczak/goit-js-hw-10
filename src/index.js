@@ -1,52 +1,31 @@
 import axios from 'axios';
-import Notiflix from 'notiflix';
+import Notiflix from 'notiflix'; // Make sure you have Notiflix installed and imported
 
 axios.defaults.headers.common['x-api-key'] =
   'api_key=live_VKCIRihYeFRPBwlrljopUQAx3HyZ6OnssyhvlIi4631GwHhUN0m1HJxXe98yCq1C';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const loader = document.querySelector('.loader');
-  const breedSelect = document.getElementById('breed-select');
-  const catInfoContainer = document.querySelector('.cat-info');
-  const errorElement = document.querySelector('.error');
-
-  if (!loader || !breedSelect || !catInfoContainer || !errorElement) {
-    console.error('Required DOM elements not found');
-    return;
-  }
-
   try {
-    const breeds = await fetchBreeds(loader, breedSelect);
-    populateBreedSelect(breeds, breedSelect); // Populate the breed select with the fetched data
+    const breeds = await fetchBreeds();
+    populateBreedSelect(breeds); // Populate the breed select with the fetched data
   } catch (error) {
-    handleFetchError(error, 'Failed to fetch breeds', errorElement);
+    handleFetchError(error, 'Failed to fetch breeds');
   }
 });
 
-async function fetchBreeds(loader, breedSelect) {
-  loader.style.display = 'block';
-  breedSelect.style.display = 'none';
-
+async function fetchBreeds() {
   try {
     const response = await axios.get('https://api.thecatapi.com/v1/breeds');
-    loader.style.display = 'none';
-    breedSelect.style.display = 'block';
     return response.data.map(breed => ({
-      value: breed.id,
-      text: breed.name,
+      id: breed.id,
+      name: breed.name,
     }));
   } catch (error) {
-    handleFetchError(error, 'Failed to fetch breeds');
     throw error;
   }
 }
 
 async function fetchCatByBreed(breedId) {
-  const loader = document.querySelector('.loader');
-  const catInfoContainer = document.querySelector('.cat-info');
-  loader.style.display = 'block';
-  catInfoContainer.style.display = 'none';
-
   try {
     const response = await axios.get(
       `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`
@@ -70,20 +49,22 @@ async function fetchCatByBreed(breedId) {
   } catch (error) {
     handleFetchError(error, 'Failed to fetch cat info');
     throw error;
-  } finally {
-    loader.style.display = 'none';
   }
 }
 
-function handleFetchError(error, message, errorElement) {
+function handleFetchError(error, message) {
   console.error('Error:', error);
-  errorElement.textContent = message;
-  errorElement.style.display = 'block';
+  Notiflix.Report.failure('Error', message, 'OK');
 }
 
 function renderCatInfo(cat) {
   const catInfoContainer = document.querySelector('.cat-info');
   catInfoContainer.innerHTML = ''; // Clear previous cat info
+
+  const catImage = document.createElement('img');
+  catImage.src = cat.imageUrl;
+  catImage.alt = cat.breed;
+  catInfoContainer.appendChild(catImage);
 
   const catBreed = document.createElement('h2');
   catBreed.textContent = cat.breed;
@@ -97,18 +78,15 @@ function renderCatInfo(cat) {
   catTemperament.textContent = `Temperament: ${cat.temperament}`;
   catInfoContainer.appendChild(catTemperament);
 
-  const catImage = document.createElement('img');
-  catImage.src = cat.imageUrl;
-  catInfoContainer.appendChild(catImage);
-
   catInfoContainer.style.display = 'block';
 }
 
-function populateBreedSelect(breeds, breedSelect) {
+function populateBreedSelect(breeds) {
+  const breedSelect = document.querySelector('.breed-select');
   breeds.forEach(breed => {
     const option = document.createElement('option');
-    option.value = breed.value;
-    option.textContent = breed.text;
+    option.value = breed.id;
+    option.textContent = breed.name;
     breedSelect.appendChild(option);
   });
 }
