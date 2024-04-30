@@ -30,8 +30,6 @@ async function fetchCatByBreed(breedId) {
     const response = await axios.get(
       `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`
     );
-    console.log('Cat info:', response.data); // Log the response data
-    // Remaining code...
   } catch (error) {
     handleFetchError(error, 'Failed to fetch cat info');
     throw error;
@@ -39,7 +37,6 @@ async function fetchCatByBreed(breedId) {
 }
 
 function handleFetchError(error, message) {
-  console.error('Error:', error);
   Notiflix.Report.failure('Error', message, 'OK');
 }
 
@@ -70,7 +67,6 @@ function renderCatInfo(cat) {
 function populateBreedSelect(breeds) {
   const breedSelect = document.getElementById('breed-select');
   if (!breedSelect) {
-    console.error('Breed select element not found');
     return;
   }
 
