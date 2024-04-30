@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function fetchBreeds() {
   try {
     const response = await axios.get('https://api.thecatapi.com/v1/breeds');
+    console.log('Breeds:', response.data); // Log the response data
     return response.data.map(breed => ({
       id: breed.id,
       name: breed.name,
@@ -30,22 +31,8 @@ async function fetchCatByBreed(breedId) {
     const response = await axios.get(
       `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`
     );
-
-    if (!response.data || response.data.length === 0) {
-      throw new Error('Cat information not found');
-    }
-
-    const catInfo = response.data[0];
-    if (!catInfo || !catInfo.breeds || catInfo.breeds.length === 0) {
-      throw new Error('Cat information not found');
-    }
-
-    return {
-      breed: catInfo.breeds[0].name,
-      description: catInfo.breeds[0].description || 'No description available',
-      temperament: catInfo.breeds[0].temperament || 'No temperament available',
-      imageUrl: catInfo.url,
-    };
+    console.log('Cat info:', response.data); // Log the response data
+    // Remaining code...
   } catch (error) {
     handleFetchError(error, 'Failed to fetch cat info');
     throw error;
@@ -82,7 +69,12 @@ function renderCatInfo(cat) {
 }
 
 function populateBreedSelect(breeds) {
-  const breedSelect = document.querySelector('.breed-select');
+  const breedSelect = document.getElementById('breed-select');
+  if (!breedSelect) {
+    console.error('Breed select element not found');
+    return;
+  }
+
   breeds.forEach(breed => {
     const option = document.createElement('option');
     option.value = breed.id;
