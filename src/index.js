@@ -15,20 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-
 import { fetchCatByBreed } from './cat-api.js';
-
-async function fetchCatByBreed(breedId) {
-  try {
-    const response = await axios.get(
-      `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`
-    );
-    return response.data[0];
-  } catch (error) {
-    handleFetchError(error, 'Failed to fetch cat info');
-    throw error;
-  }
-}
 
 function handleFetchError(error, message) {
   Notiflix.Report.failure('Error', message, 'OK');
