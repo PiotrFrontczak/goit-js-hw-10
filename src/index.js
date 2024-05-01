@@ -1,8 +1,5 @@
-import axios from 'axios';
 import Notiflix from 'notiflix';
-
-axios.defaults.headers.common['x-api-key'] =
-  'live_VKCIRihYeFRPBwlrljopUQAx3HyZ6OnssyhvlIi4631GwHhUN0m1HJxXe98yCq1C';
+import { fetchBreeds } from './cat-api';
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -12,6 +9,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     handleFetchError(error, 'Failed to fetch breeds');
   }
 });
+
+import { fetchCatByBreed } from './cat-api.js';
 
 async function fetchBreeds() {
   try {
