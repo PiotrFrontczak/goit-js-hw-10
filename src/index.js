@@ -2,7 +2,7 @@ import axios from 'axios';
 import Notiflix from 'notiflix';
 
 axios.defaults.headers.common['x-api-key'] =
-  'api_key=live_VKCIRihYeFRPBwlrljopUQAx3HyZ6OnssyhvlIi4631GwHhUN0m1HJxXe98yCq1C';
+  'live_VKCIRihYeFRPBwlrljopUQAx3HyZ6OnssyhvlIi4631GwHhUN0m1HJxXe98yCq1C';
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -30,6 +30,7 @@ async function fetchCatByBreed(breedId) {
     const response = await axios.get(
       `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`
     );
+    return response.data[0];
   } catch (error) {
     handleFetchError(error, 'Failed to fetch cat info');
     throw error;
@@ -42,23 +43,27 @@ function handleFetchError(error, message) {
 
 function renderCatInfo(cat) {
   const catInfoContainer = document.querySelector('.cat-info');
-  catInfoContainer.innerHTML = ''; 
+  catInfoContainer.innerHTML = '';
 
   const catImage = document.createElement('img');
-  catImage.src = cat.imageUrl;
-  catImage.alt = cat.breed;
+  catImage.src = cat.url;
+  catImage.alt = cat.breeds[0].name;
   catInfoContainer.appendChild(catImage);
 
   const catBreed = document.createElement('h2');
-  catBreed.textContent = cat.breed;
+  catBreed.textContent = cat.breeds[0].name;
   catInfoContainer.appendChild(catBreed);
 
   const catDescription = document.createElement('p');
-  catDescription.textContent = `Description: ${cat.description}`;
+  catDescription.textContent = `Description: ${
+    cat.breeds[0].description || 'N/A'
+  }`;
   catInfoContainer.appendChild(catDescription);
 
   const catTemperament = document.createElement('p');
-  catTemperament.textContent = `Temperament: ${cat.temperament}`;
+  catTemperament.textContent = `Temperament: ${
+    cat.breeds[0].temperament || 'N/A'
+  }`;
   catInfoContainer.appendChild(catTemperament);
 
   catInfoContainer.style.display = 'block';
@@ -75,5 +80,15 @@ function populateBreedSelect(breeds) {
     option.value = breed.id;
     option.textContent = breed.name;
     breedSelect.appendChild(option);
+  });
+
+  breedSelect.addEventListener('change', async event => {
+    const selectedBreedId = event.target.value;
+    try {
+      const cat = await fetchCatByBreed(selectedBreedId);
+      renderCatInfo(cat);
+    } catch (error) {
+      handleFetchError(error, 'Failed to fetch cat info');
+    }
   });
 }
