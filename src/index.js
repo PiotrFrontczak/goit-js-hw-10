@@ -1,5 +1,5 @@
 import Notiflix from 'notiflix';
-import { fetchBreeds } from './cat-api';
+import { fetchBreeds } from './cat-api.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -11,18 +11,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 import { fetchCatByBreed } from './cat-api.js';
-
-async function fetchBreeds() {
-  try {
-    const response = await axios.get('https://api.thecatapi.com/v1/breeds');
-    return response.data.map(breed => ({
-      id: breed.id,
-      name: breed.name,
-    }));
-  } catch (error) {
-    throw error;
-  }
-}
 
 async function fetchCatByBreed(breedId) {
   try {
