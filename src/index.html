@@ -5,12 +5,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Homework 10</title>
+  <link rel="stylesheet" href="https://cssloaders.github.io/simple-loader/simple-loader.css">
 </head>
 
 <body>
-  <select id="breed-select"></select>
-  <p class="loader">Loading data, please wait...</p>
-  <p class="error">Oops! Something went wrong! Try reloading the page!</p>
+  <div id="loader" class="simple-loader"></div>
+  <div id="breed-select-container">
+    <select id="breed-select"></select>
+  </div>
   <div class="cat-info"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/notiflix/2.8.2/notiflix.min.js"></script>

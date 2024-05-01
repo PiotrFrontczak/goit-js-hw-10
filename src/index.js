@@ -2,13 +2,19 @@ import Notiflix from 'notiflix';
 import { fetchBreeds } from './cat-api.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  const loader = document.getElementById('loader');
+  loader.style.display = 'block';
+
   try {
     const breeds = await fetchBreeds();
     populateBreedSelect(breeds);
   } catch (error) {
     handleFetchError(error, 'Failed to fetch breeds');
+  } finally {
+    loader.style.display = 'none';
   }
 });
+
 
 import { fetchCatByBreed } from './cat-api.js';
 
